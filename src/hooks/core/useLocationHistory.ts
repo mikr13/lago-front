@@ -72,7 +72,10 @@ export const useLocationHistory: UseLocationHistoryReturn = () => {
          * In case of navigation to a private route while NOT authenticated
          * Redirect to login and add the route the user tried to visit in the history
          */
-        navigate(LOGIN_ROUTE)
+        navigate({
+          pathname: LOGIN_ROUTE,
+          search: location.search,
+        })
         addLocationToHistory(location)
       } else if (!routeConfig?.children && !routeConfig.onlyPublic) {
         // In the invitation for page, once users are logged in, we redirect them to the home page
