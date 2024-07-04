@@ -1,9 +1,9 @@
 import { ApolloError, LazyQueryHookOptions } from '@apollo/client'
 import { useEffect, useRef } from 'react'
 import { generatePath, useNavigate } from 'react-router-dom'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 
-import { Button, InfiniteScroll, Typography } from '~/components/designSystem'
+import { InfiniteScroll, QuickFilters, Typography } from '~/components/designSystem'
 import { GenericPlaceholder } from '~/components/GenericPlaceholder'
 import {
   UpdateInvoicePaymentStatusDialog,
@@ -25,10 +25,13 @@ import { GetInvoicesListQuery } from '~/generated/graphql'
 import { useInternationalization } from '~/hooks/core/useInternationalization'
 import { useListKeysNavigation } from '~/hooks/ui/useListKeyNavigation'
 import { CustomerInvoiceDetailsTabsOptionsEnum } from '~/layouts/CustomerInvoiceDetails'
-import { InvoiceListStatusEnum } from '~/pages/InvoicesPage'
 import EmptyImage from '~/public/images/maneki/empty.svg'
 import ErrorImage from '~/public/images/maneki/error.svg'
-import { ListContainer, ListHeader, NAV_HEIGHT, palette, theme } from '~/styles'
+import { ListContainer, ListHeader, NAV_HEIGHT, theme } from '~/styles'
+
+import { InvoiceListStatusEnum } from './types'
+
+import { AvailableQuickFilters } from '../designSystem/Filters/types'
 
 // Needed to be able to pass both ids to the keyboard navigation function
 const ID_SPLIT_KEY = '&-%-&'
@@ -81,78 +84,7 @@ const InvoicesList = ({
 
   return (
     <>
-      <TabSwitchContainer>
-        <InvoiceTypeSwitch
-          variant="tertiary"
-          align="left"
-          $isSelected={invoiceType === InvoiceListStatusEnum.all}
-          onClick={() => navigate({ search: `?invoiceType=${InvoiceListStatusEnum.all}` })}
-        >
-          <Typography variant="captionHl" color="grey600">
-            {translate('text_63ac86d797f728a87b2f9f8b')}
-          </Typography>
-        </InvoiceTypeSwitch>
-        <InvoiceTypeSwitch
-          variant="tertiary"
-          align="left"
-          $isSelected={invoiceType === InvoiceListStatusEnum.draft}
-          onClick={() => navigate({ search: `?invoiceType=${InvoiceListStatusEnum.draft}` })}
-        >
-          <Typography variant="captionHl" color="grey600">
-            {translate('text_63ac86d797f728a87b2f9f91')}
-          </Typography>
-        </InvoiceTypeSwitch>
-        <InvoiceTypeSwitch
-          variant="tertiary"
-          align="left"
-          $isSelected={invoiceType === InvoiceListStatusEnum.outstanding}
-          onClick={() => navigate({ search: `?invoiceType=${InvoiceListStatusEnum.outstanding}` })}
-        >
-          <Typography variant="captionHl" color="grey600">
-            {translate('text_666c5b12fea4aa1e1b26bf52')}
-          </Typography>
-        </InvoiceTypeSwitch>
-        <InvoiceTypeSwitch
-          variant="tertiary"
-          align="left"
-          $isSelected={invoiceType === InvoiceListStatusEnum.overdue}
-          onClick={() => navigate({ search: `?invoiceType=${InvoiceListStatusEnum.overdue}` })}
-        >
-          <Typography variant="captionHl" color="grey600">
-            {translate('text_666c5b12fea4aa1e1b26bf55')}
-          </Typography>
-        </InvoiceTypeSwitch>
-        <InvoiceTypeSwitch
-          variant="tertiary"
-          align="left"
-          $isSelected={invoiceType === InvoiceListStatusEnum.succeeded}
-          onClick={() => navigate({ search: `?invoiceType=${InvoiceListStatusEnum.succeeded}` })}
-        >
-          <Typography variant="captionHl" color="grey600">
-            {translate('text_63ac86d797f728a87b2f9fa1')}
-          </Typography>
-        </InvoiceTypeSwitch>
-        <InvoiceTypeSwitch
-          variant="tertiary"
-          align="left"
-          $isSelected={invoiceType === InvoiceListStatusEnum.voided}
-          onClick={() => navigate({ search: `?invoiceType=${InvoiceListStatusEnum.voided}` })}
-        >
-          <Typography variant="captionHl" color="grey600">
-            {translate('text_6376641a2a9c70fff5bddcd5')}
-          </Typography>
-        </InvoiceTypeSwitch>
-        <InvoiceTypeSwitch
-          variant="tertiary"
-          align="left"
-          $isSelected={invoiceType === InvoiceListStatusEnum.disputed}
-          onClick={() => navigate({ search: `?invoiceType=${InvoiceListStatusEnum.disputed}` })}
-        >
-          <Typography variant="captionHl" color="grey600">
-            {translate('text_66141e30699a0631f0b2ed32')}
-          </Typography>
-        </InvoiceTypeSwitch>
-      </TabSwitchContainer>
+      <QuickFilters type={AvailableQuickFilters.InvoiceStatus} />
       <ScrollContainer
         ref={listContainerElementRef}
         role="grid"
@@ -344,34 +276,4 @@ const CustomerName = styled(Typography)`
   ${theme.breakpoints.down('md')} {
     display: none;
   }
-`
-
-const TabSwitchContainer = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: center;
-  padding: ${theme.spacing(4)} ${theme.spacing(12)};
-  box-sizing: border-box;
-  gap: ${theme.spacing(3)};
-  box-shadow: ${theme.shadows[7]};
-  overflow-y: scroll;
-
-  ${theme.breakpoints.down('md')} {
-    padding: ${theme.spacing(4)};
-  }
-`
-
-const InvoiceTypeSwitch = styled(Button)<{ $isSelected: boolean }>`
-  height: 44px;
-  flex-shrink: 0;
-
-  ${({ $isSelected }) =>
-    $isSelected &&
-    css`
-      color: ${palette.primary.main};
-
-      > div {
-        color: ${palette.primary.main};
-      }
-    `};
 `
